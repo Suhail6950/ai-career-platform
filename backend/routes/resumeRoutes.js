@@ -1,10 +1,13 @@
 const express = require("express");
 
-const upload = require("../middleware/uploadMiddleware");
+const upload =
+require("../middleware/uploadMiddleware");
 
 const {
   uploadResume,
-} = require("../controllers/resumeController");
+} = require(
+  "../controllers/resumeController"
+);
 
 const router = express.Router();
 
