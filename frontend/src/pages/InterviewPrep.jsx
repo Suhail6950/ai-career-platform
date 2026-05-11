@@ -18,7 +18,7 @@ const InterviewPrep = () => {
   const generateQuestions = async () => {
 
     const response = await axios.post(
-      "http://localhost:5000/api/interview/questions",
+      "https://ai-career-platform-backend-m2y7.onrender.com/api/interview/questions",
       {
         role,
         difficulty,

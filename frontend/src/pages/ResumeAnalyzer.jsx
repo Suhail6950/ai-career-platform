@@ -26,7 +26,7 @@ const ResumeAnalyzer = () => {
     formData.append("resume", file);
 
     const uploadResponse = await axios.post(
-      "http://localhost:5000/api/resume/upload",
+      "https://ai-career-platform-backend-m2y7.onrender.com/api/resume/upload",
       formData
     );
 
@@ -35,7 +35,7 @@ const ResumeAnalyzer = () => {
 
     const analysisResponse =
       await axios.post(
-        "http://localhost:5000/api/ai/analyze",
+        "https://ai-career-platform-backend-m2y7.onrender.com/api/ai/analyze",
         {
           resumeText: extractedText,
           jobDescription,

@@ -25,7 +25,7 @@ const Register = () => {
     try {
 
       await axios.post(
-        "http://localhost:5000/api/auth/register",
+        "https://ai-career-platform-backend-m2y7.onrender.com/api/auth/register",
         {
           name,
           email,
