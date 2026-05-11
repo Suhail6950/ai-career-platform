@@ -1,43 +1,57 @@
 const express = require("express");
 
+const axios = require("axios");
+
 const router = express.Router();
 
-router.get("/:username", async (req, res) => {
+router.get("/:username",
+async (req, res) => {
+
   try {
 
     const { username } = req.params;
 
-    const response = await fetch(
-      `https://api.github.com/users/${username}`
-    );
+    const userResponse =
+      await axios.get(
+        `https://api.github.com/users/${username}`
+      );
 
-    const data = await response.json();
+    const reposResponse =
+      await axios.get(
+        `https://api.github.com/users/${username}/repos`
+      );
 
-    const reposResponse = await fetch(
-      `https://api.github.com/users/${username}/repos`
-    );
+    const totalStars =
+      reposResponse.data.reduce(
+        (acc, repo) =>
+          acc + repo.stargazers_count,
+        0
+      );
 
-    const repos = await reposResponse.json();
-
-    let totalStars = 0;
-
-    repos.forEach((repo) => {
-      totalStars += repo.stargazers_count;
-    });
-
-    res.json({
-      success: true,
+    res.status(200).json({
 
       profile: {
-        name: data.name,
-        avatar: data.avatar_url,
-        bio: data.bio,
-        followers: data.followers,
-        following: data.following,
-        publicRepos: data.public_repos,
-        githubUrl: data.html_url,
+
+        name: userResponse.data.name,
+
+        bio: userResponse.data.bio,
+
+        avatar:
+          userResponse.data.avatar_url,
+
+        followers:
+          userResponse.data.followers,
+
+        following:
+          userResponse.data.following,
+
+        publicRepos:
+          userResponse.data.public_repos,
+
         totalStars,
+
       },
+
     });
 
   } catch (error) {
@@ -45,11 +59,13 @@ router.get("/:username", async (req, res) => {
     console.log(error);
 
     res.status(500).json({
-      success: false,
-      error: error.message,
+
+      message: "GitHub Fetch Failed",
+
     });
 
   }
+
 });
 
 module.exports = router;
