@@ -1,29 +1,26 @@
 const multer = require("multer");
 const pdfParse = require("pdf-parse");
-const fs = require("fs");
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
+const storage = multer.memoryStorage();
 
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + file.originalname);
-  },
+const upload = multer({
+  storage: storage,
 });
-
-const upload = multer({ storage });
 
 const uploadResume = async (req, res) => {
 
   try {
 
-    const dataBuffer = fs.readFileSync(
-      req.file.path
-    );
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "No file uploaded",
+      });
+    }
 
-    const pdfData =
-      await pdfParse(dataBuffer);
+    const pdfData = await pdfParse(
+      req.file.buffer
+    );
 
     res.json({
       success: true,
@@ -32,7 +29,7 @@ const uploadResume = async (req, res) => {
 
   } catch (error) {
 
-    console.log(error);
+    console.log("PDF ERROR:", error);
 
     res.status(500).json({
       success: false,
