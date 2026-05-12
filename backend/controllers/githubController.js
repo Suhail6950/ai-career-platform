@@ -1,26 +1,32 @@
+const axios = require("axios");
+
 const getGithubData = async (req, res) => {
 
   try {
 
     const username = req.params.username;
 
+    const response = await axios.get(
+      `https://api.github.com/users/${username}`,
+      {
+        headers: {
+          Accept: "application/vnd.github+json",
+          "User-Agent": "AI-Career-Platform",
+        },
+      }
+    );
+
     res.json({
       success: true,
-      profile: {
-        login: username,
-        name: "Linus Torvalds",
-        public_repos: 8,
-        followers: 250000,
-        following: 0,
-        bio: "Creator of Linux and Git",
-        avatar_url:
-          "https://avatars.githubusercontent.com/u/1024025?v=4",
-      },
+      profile: response.data,
     });
 
   } catch (error) {
 
-    console.log(error);
+    console.log(
+      "GitHub Error:",
+      error.response?.data || error.message
+    );
 
     res.status(500).json({
       success: false,
