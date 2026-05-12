@@ -15,36 +15,54 @@ const ResumeAnalyzer = () => {
     setJobDescription] = useState("");
 
   const handleUpload = async () => {
+    try {
+      if (!file) {
+        alert("Upload Resume");
+        return;
+      }
 
-    if (!file) {
-      alert("Upload Resume");
-      return;
-    }
+      const formData = new FormData();
+      formData.append("resume", file);
 
-    const formData = new FormData();
+      console.log("Uploading resume...");
 
-    formData.append("resume", file);
-
-    const uploadResponse = await axios.post(
-      "https://ai-career-platform-backend-m2y7.onrender.com/api/resume/upload",
-      formData
-    );
-
-    const extractedText =
-      uploadResponse.data.extractedText;
-
-    const analysisResponse =
-      await axios.post(
-        "https://ai-career-platform-backend-m2y7.onrender.com/api/ai/analyze",
-        {
-          resumeText: extractedText,
-          jobDescription,
-        }
+      const uploadResponse = await axios.post(
+        "https://ai-career-platform-backend-m2y7.onrender.com/api/resume/upload",
+        formData
       );
 
-    setAnalysis(
-      analysisResponse.data.analysis
-    );
+      console.log("Upload Response:", uploadResponse.data);
+
+      const extractedText =
+        uploadResponse.data.extractedText;
+
+      console.log("Extracted Text:", extractedText);
+
+      const analysisResponse =
+        await axios.post(
+          "https://ai-career-platform-backend-m2y7.onrender.com/api/resume/analyze",
+          {
+            resumeText: extractedText,
+            jobDescription,
+          }
+        );
+
+      console.log(
+        "Analysis Response:",
+        analysisResponse.data
+      );
+
+      setAnalysis(
+        analysisResponse.data.analysis
+      );
+
+    } catch (error) {
+      console.log(
+        error.response?.data || error.message
+      );
+
+      alert("Resume analysis failed");
+    }
   };
 
   return (
