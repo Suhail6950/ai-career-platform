@@ -12,7 +12,6 @@ const ResumeAnalyzer = () => {
     useState("");
 
   const handleUpload = async () => {
-
     try {
 
       if (!file) {
@@ -21,42 +20,43 @@ const ResumeAnalyzer = () => {
       }
 
       const formData = new FormData();
-
       formData.append("resume", file);
 
-      console.log("Uploading Resume...");
+      alert("Uploading resume...");
 
+      // STEP 1: Upload PDF
       const uploadResponse = await axios.post(
         "https://ai-career-platform-backend-m2y7.onrender.com/api/resume/upload",
-        formData
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
 
-      console.log(
-        "Upload Response:",
-        uploadResponse.data
-      );
+      console.log(uploadResponse.data);
 
+      // STEP 2: Get extracted text
       const extractedText =
         uploadResponse.data.extractedText;
 
-      console.log(
-        "Extracted Text:",
-        extractedText
+      if (!extractedText) {
+        alert("PDF text extraction failed");
+        return;
+      }
+
+      alert("Resume uploaded successfully");
+
+      // STEP 3: Analyze
+      const analysisResponse = await axios.post(
+        "https://ai-career-platform-backend-m2y7.onrender.com/api/resume/analyze",
+        {
+          resumeText: extractedText,
+        }
       );
 
-      const analysisResponse =
-        await axios.post(
-          "https://ai-career-platform-backend-m2y7.onrender.com/api/resume/analyze",
-          {
-            resumeText: extractedText,
-            jobDescription,
-          }
-        );
-
-      console.log(
-        "Analysis Response:",
-        analysisResponse.data
-      );
+      console.log(analysisResponse.data);
 
       setAnalysis({
         score: 85,
@@ -67,11 +67,13 @@ const ResumeAnalyzer = () => {
 
     } catch (error) {
 
-      console.log(
-        error.response?.data || error.message
-      );
+      console.log(error);
 
-      alert("Resume analysis failed");
+      alert(
+        error.response?.data?.message ||
+        error.message ||
+        "Something went wrong"
+      );
     }
   };
 
