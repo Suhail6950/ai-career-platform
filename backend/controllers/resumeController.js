@@ -4,6 +4,9 @@ const analyzeResume = async (req, res) => {
   try {
     const resumeText = req.body.resumeText;
 
+    console.log("Resume text:", resumeText);
+    console.log("API KEY:", process.env.OPENAI_API_KEY);
+
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",
       {
@@ -43,7 +46,7 @@ ${resumeText}
       analysis: response.data.choices[0].message.content,
     });
   } catch (error) {
-    console.log(error);
+    console.log(error.response?.data || error.message);
 
     res.status(500).json({
       success: false,
