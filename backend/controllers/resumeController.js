@@ -1,10 +1,51 @@
+const multer = require("multer");
+const pdfParse = require("pdf-parse");
+const fs = require("fs");
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + file.originalname);
+  },
+});
+
+const upload = multer({ storage });
+
+const uploadResume = async (req, res) => {
+
+  try {
+
+    const dataBuffer = fs.readFileSync(
+      req.file.path
+    );
+
+    const pdfData =
+      await pdfParse(dataBuffer);
+
+    res.json({
+      success: true,
+      extractedText: pdfData.text,
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: "PDF extraction failed",
+    });
+  }
+};
+
 const analyzeResume = async (req, res) => {
 
   try {
 
     const { resumeText } = req.body;
-
-    console.log("Resume Text:", resumeText);
 
     res.json({
       success: true,
@@ -46,5 +87,7 @@ Interview Questions:
 };
 
 module.exports = {
+  upload,
+  uploadResume,
   analyzeResume,
 };
