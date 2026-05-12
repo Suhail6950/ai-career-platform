@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-exports.analyzeResume = async (req, res) => {
+const analyzeResume = async (req, res) => {
   try {
     const resumeText = req.body.resumeText;
 
@@ -11,7 +11,7 @@ exports.analyzeResume = async (req, res) => {
         messages: [
           {
             role: "system",
-            content: "You are an AI career advisor.",
+            content: "You are an AI career advisor",
           },
           {
             role: "user",
@@ -44,9 +44,14 @@ ${resumeText}
     });
   } catch (error) {
     console.log(error);
+
     res.status(500).json({
       success: false,
       message: "AI analysis failed",
     });
   }
+};
+
+module.exports = {
+  analyzeResume,
 };
