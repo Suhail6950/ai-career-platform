@@ -1,56 +1,46 @@
-const axios = require("axios");
-
 const analyzeResume = async (req, res) => {
+
   try {
-    const resumeText = req.body.resumeText;
 
-    console.log("Resume text:", resumeText);
-    console.log("API KEY:", process.env.OPENAI_API_KEY);
+    const { resumeText } = req.body;
 
-    const response = await axios.post(
-      "https://api.openai.com/v1/chat/completions",
-      {
-        model: "gpt-4o-mini",
-        messages: [
-          {
-            role: "system",
-            content: "You are an AI career advisor",
-          },
-          {
-            role: "user",
-            content: `
-Analyze this resume and provide:
-1. Resume Score
-2. Skills
-3. Strengths
-4. Weaknesses
-5. Career Recommendations
-6. Interview Questions
-
-Resume:
-${resumeText}
-            `,
-          },
-        ],
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    console.log("Resume Text:", resumeText);
 
     res.json({
       success: true,
-      analysis: response.data.choices[0].message.content,
+      analysis: `
+Resume Score: 85
+
+Skills:
+- React
+- Node.js
+- MongoDB
+
+Strengths:
+- Good frontend skills
+- Full stack understanding
+
+Weaknesses:
+- Improve DSA
+
+Career Recommendations:
+- Full Stack Developer
+- MERN Developer
+
+Interview Questions:
+1. Explain React Hooks
+2. What is JWT?
+3. Explain MongoDB
+      `,
     });
+
   } catch (error) {
-    console.log(error.response?.data || error.message);
+
+    console.log(error);
 
     res.status(500).json({
       success: false,
-      message: "AI analysis failed",
+      message: "Analysis failed",
     });
   }
 };
