@@ -3,6 +3,8 @@ const pdfParse = require("pdf-parse");
 
 const storage = multer.memoryStorage();
 
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+
 const upload = multer({
   storage: storage,
 });
@@ -38,38 +40,45 @@ const uploadResume = async (req, res) => {
   }
 };
 
-const analyzeResume = async (req, res) => {
+const genAI = new GoogleGenerativeAI(
+  process.env.GEMINI_API_KEY
+);
 
+const analyzeResume = async (req, res) => {
   try {
 
     const { resumeText } = req.body;
 
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash",
+    });
+
+    const prompt = `
+Analyze this resume.
+
+Give:
+
+1. Resume Score out of 100
+2. Skills
+3. Strengths
+4. Weaknesses
+5. Missing Skills
+6. Career Recommendations
+7. Interview Questions
+
+Resume:
+${resumeText}
+`;
+
+    const result =
+      await model.generateContent(prompt);
+
+    const response =
+      result.response.text();
+
     res.json({
       success: true,
-      analysis: `
-Resume Score: 85
-
-Skills:
-- React
-- Node.js
-- MongoDB
-
-Strengths:
-- Good frontend skills
-- Full stack understanding
-
-Weaknesses:
-- Improve DSA
-
-Career Recommendations:
-- Full Stack Developer
-- MERN Developer
-
-Interview Questions:
-1. Explain React Hooks
-2. What is JWT?
-3. Explain MongoDB
-      `,
+      analysis: response,
     });
 
   } catch (error) {
@@ -80,6 +89,7 @@ Interview Questions:
       success: false,
       message: "Analysis failed",
     });
+
   }
 };
 
