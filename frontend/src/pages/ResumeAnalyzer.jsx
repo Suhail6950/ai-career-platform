@@ -53,17 +53,13 @@ const ResumeAnalyzer = () => {
         "https://ai-career-platform-backend-m2y7.onrender.com/api/resume/analyze",
         {
           resumeText: extractedText,
+          jobDescription,
         }
       );
 
       console.log(analysisResponse.data);
 
-      setAnalysis({
-        score: 85,
-        matchScore: 78,
-        fullAnalysis:
-          analysisResponse.data.analysis,
-      });
+      setAnalysis(analysisResponse.data.analysis);
 
     } catch (error) {
 
@@ -131,7 +127,7 @@ const ResumeAnalyzer = () => {
                 </h2>
 
                 <div className="text-6xl text-green-400 font-bold">
-                  {analysis.score}%
+                  {analysis.atsScore}%
                 </div>
 
               </div>
@@ -143,7 +139,7 @@ const ResumeAnalyzer = () => {
                 </h2>
 
                 <div className="text-6xl text-blue-400 font-bold">
-                  {analysis.matchScore}%
+                  {analysis.resumeScore}%
                 </div>
 
               </div>
@@ -156,10 +152,26 @@ const ResumeAnalyzer = () => {
                 Full AI Analysis
               </h2>
 
-              <pre className="whitespace-pre-wrap text-sm">
-                {analysis.fullAnalysis}
-              </pre>
+              <h3>Skills</h3>
+              <ul>
+                {analysis.skills?.map((skill) => (
+                  <li key={skill}>{skill}</li>
+                ))}
+              </ul>
 
+              <h3>Strengths</h3>
+              <ul>
+                {analysis.strengths?.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+
+              <h3>Weaknesses</h3>
+              <ul>
+                {analysis.weaknesses?.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
             </div>
 
           </div>
