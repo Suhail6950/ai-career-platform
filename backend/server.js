@@ -21,9 +21,9 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://ai-career-platform-tau.vercel.app",
+      "https://ai-career-platform-beta.vercel.app",
     ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
   })
 );
