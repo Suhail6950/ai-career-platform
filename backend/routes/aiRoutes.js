@@ -4,41 +4,27 @@ const router = express.Router();
 // Temporary API
 
 router.post("/analyze", async (req, res) => {
+  console.log("===== ANALYZE REQUEST =====");
+  console.log(req.body);
+
   try {
     const { resumeText, jobDescription } = req.body;
 
-    res.json({
+    return res.status(200).json({
       success: true,
       analysis: {
         score: 85,
-        skills: [
-          "JavaScript",
-          "React",
-          "Node.js",
-          "Express",
-          "MongoDB"
-        ],
-        strengths: [
-          "Good technical skills",
-          "Relevant projects"
-        ],
-        weaknesses: [
-          "Add certifications",
-          "Improve resume formatting"
-        ],
-        recommendations: [
-          "Learn Docker",
-          "Practice DSA",
-          "Improve SQL"
-        ]
+        skills: ["JavaScript", "React", "Node.js"],
+        strengths: ["Good Projects"],
+        weaknesses: ["Improve Resume"],
+        recommendations: ["Learn Docker"]
       }
     });
-
   } catch (err) {
-    console.error(err);
-    res.status(500).json({
+    console.error("ANALYZE ERROR:", err);
+    return res.status(500).json({
       success: false,
-      message: err.message
+      error: err.message,
     });
   }
 });
