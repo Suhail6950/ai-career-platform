@@ -26,7 +26,7 @@ const ResumeAnalyzer = () => {
 
       // STEP 1: Upload PDF
       const uploadResponse = await axios.post(
-        "https://ai-career-platform-backend-m2y7.onrender.com/api/resume/upload",
+        "https://ai-career-platform-f6c0.onrender.com/api/resume/upload",
         formData,
         {
           headers: {
@@ -50,7 +50,7 @@ const ResumeAnalyzer = () => {
 
       // STEP 3: Analyze
       const analysisResponse = await axios.post(
-        "https://ai-career-platform-backend-m2y7.onrender.com/api/resume/analyze",
+        "https://ai-career-platform-f6c0.onrender.com/api/resume/analyze",
         {
           resumeText: extractedText,
           jobDescription,

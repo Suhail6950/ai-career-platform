@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { useNavigate, Link }
-from "react-router-dom";
+  from "react-router-dom";
 
 import axios from "axios";
 
@@ -19,7 +19,7 @@ const Login = () => {
     try {
 
       const response = await axios.post(
-        "https://ai-career-platform-backend-m2y7.onrender.com/api/auth/login",
+        "https://ai-career-platform-f6c0.onrender.com/api/auth/login",
         {
           email,
           password,

@@ -15,7 +15,7 @@ const GithubAnalyzer = () => {
   const fetchGithub = async () => {
 
     const response = await axios.get(
-      `https://ai-career-platform-backend-m2y7.onrender.com/api/github/${username}`
+      `https://ai-career-platform-f6c0.onrender.com/api/github/${username}`
     );
 
     setData(response.data.profile);
