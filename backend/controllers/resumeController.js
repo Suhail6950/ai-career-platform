@@ -54,21 +54,19 @@ const analyzeResume = async (req, res) => {
     }
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.5-flash-lite",
     });
-
     const prompt = `
 You are an expert ATS Resume Analyzer.
 
 Analyze the resume carefully.
 
-${
-jobDescription
-? `Compare it with the following Job Description:
+${jobDescription
+        ? `Compare it with the following Job Description:
 
 ${jobDescription}`
-: "No Job Description is provided. Calculate ATS score based on industry best practices."
-}
+        : "No Job Description is provided. Calculate ATS score based on industry best practices."
+      }
 
 Return ONLY valid JSON.
 
