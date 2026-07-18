@@ -4,12 +4,22 @@ const jwt = require("jsonwebtoken");
 
 const registerUser = async (req, res) => {
   try {
+    console.log("Register Request:", req.body);
+
     const { name, email, password } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
+    }
 
     const userExists = await User.findOne({ email });
 
     if (userExists) {
       return res.status(400).json({
+        success: false,
         message: "User already exists",
       });
     }
@@ -24,6 +34,10 @@ const registerUser = async (req, res) => {
       password: hashedPassword,
     });
 
+    if (!process.env.JWT_SECRET) {
+      throw new Error("JWT_SECRET is missing in Render Environment Variables");
+    }
+
     const token = jwt.sign(
       {
         id: user._id,
@@ -34,7 +48,8 @@ const registerUser = async (req, res) => {
       }
     );
 
-    res.status(201).json({
+    return res.status(201).json({
+      success: true,
       token,
       user: {
         id: user._id,
@@ -44,7 +59,11 @@ const registerUser = async (req, res) => {
     });
 
   } catch (error) {
-    res.status(500).json({
+    console.error("REGISTER ERROR");
+    console.error(error);
+
+    return res.status(500).json({
+      success: false,
       message: error.message,
     });
   }
@@ -52,25 +71,37 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   try {
+    console.log("Login Request:", req.body);
+
     const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and Password are required",
+      });
+    }
 
     const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(400).json({
-        message: "Invalid credentials",
+        success: false,
+        message: "Invalid Email",
       });
     }
 
-    const isMatch = await bcrypt.compare(
-      password,
-      user.password
-    );
+    const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
       return res.status(400).json({
-        message: "Invalid credentials",
+        success: false,
+        message: "Invalid Password",
       });
+    }
+
+    if (!process.env.JWT_SECRET) {
+      throw new Error("JWT_SECRET is missing in Render Environment Variables");
     }
 
     const token = jwt.sign(
@@ -83,7 +114,8 @@ const loginUser = async (req, res) => {
       }
     );
 
-    res.status(200).json({
+    return res.status(200).json({
+      success: true,
       token,
       user: {
         id: user._id,
@@ -93,7 +125,11 @@ const loginUser = async (req, res) => {
     });
 
   } catch (error) {
-    res.status(500).json({
+    console.error("LOGIN ERROR");
+    console.error(error);
+
+    return res.status(500).json({
+      success: false,
       message: error.message,
     });
   }
